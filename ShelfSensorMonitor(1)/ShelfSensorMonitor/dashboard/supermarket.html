@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShelfSense — Manager Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#080d18;--sf:#0e1625;--sf2:#141e30;
+      --b:#1a2840;--bhi:#243550;
+      --cyan:#00d4ff;--cdim:rgba(0,212,255,.08);
+      --amber:#f59e0b;--adim:rgba(245,158,11,.1);
+      --red:#ef4444;--rdim:rgba(239,68,68,.1);
+      --green:#10b981;--gdim:rgba(16,185,129,.1);
+      --text:#e2e8f0;--muted:#94a3b8;--dim:#3d5470;
+      --head:'Barlow Condensed',sans-serif;--body:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+    }
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{font-family:var(--body);color:var(--text);min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;
+      background-image:radial-gradient(circle,rgba(0,212,255,.045) 1px,transparent 1px);
+      background-size:28px 28px;pointer-events:none;z-index:0}
+
+    .app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
+
+    /* header */
+    header{position:sticky;top:0;z-index:100;background:rgba(8,13,24,.96);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--b);padding:0 28px;height:56px;
+      display:flex;align-items:center;justify-content:space-between}
+    .h-left{display:flex;align-items:center;gap:14px}
+    .brand{font-family:var(--head);font-size:20px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .brand em{color:var(--cyan);font-style:normal}
+    .hdiv{width:1px;height:22px;background:var(--bhi)}
+    .hpage{font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+    .h-right{display:flex;align-items:center;gap:14px}
+    .live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green)}
+    .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+    .user-chip{display:flex;align-items:center;gap:7px;background:var(--sf2);border:1px solid var(--b);padding:5px 10px;font-size:12px;color:var(--muted)}
+    .user-chip strong{color:var(--text);font-weight:600}
+    .back{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--dim);text-decoration:none;border:1px solid var(--b);padding:4px 9px;transition:color .2s,border-color .2s}
+    .back:hover{color:var(--cyan);border-color:var(--cyan)}
+
+    main{flex:1;padding:28px;max-width:1380px;width:100%;margin:0 auto}
+
+    /* section heads */
+    .sh{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:36px}
+    .sh:first-child{margin-top:0}
+    .sh h2{font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+    .sh .rule{flex:1;height:1px;background:var(--b)}
+    .cnt{font-family:var(--mono);font-size:10px;padding:2px 7px;border:1px solid}
+    .cnt-r{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.2)}
+    .cnt-a{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.2)}
+    .cnt-c{color:var(--cyan);background:var(--cdim);border-color:rgba(0,212,255,.2)}
+    .cnt-g{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.2)}
+
+    /* stats */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:0}
+    .stat{background:var(--sf);border:1px solid var(--b);padding:18px 22px;position:relative;overflow:hidden}
+    .stat::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+    .stat.c::after{background:var(--cyan)}
+    .stat.r::after{background:var(--red)}
+    .stat.a::after{background:var(--amber)}
+    .stat.g::after{background:var(--green)}
+    .stat-lbl{font-family:var(--head);font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+    .stat-val{font-family:var(--head);font-size:38px;font-weight:800;line-height:1}
+    .vc{color:var(--cyan)}.vr{color:var(--red)}.va{color:var(--amber)}.vg{color:var(--green)}
+
+    /* alert cards */
+    .alerts{display:flex;flex-direction:column;gap:9px}
+    .ac{background:var(--sf);border:1px solid var(--b);border-left:3px solid var(--red);
+      padding:14px 18px;display:flex;align-items:flex-start;gap:14px;transition:opacity .3s}
+    .ac.warn{border-left-color:var(--amber)}
+    .ac.info{border-left-color:var(--cyan)}
+    .aico{font-size:18px;flex-shrink:0;margin-top:1px}
+    .abody{flex:1}
+    .atype{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+    .atype.warn{color:var(--amber)}.atype.info{color:var(--cyan)}
+    .amsg{font-size:13px;font-weight:500;color:var(--text);line-height:1.4}
+    .ameta{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:3px}
+    .aact{flex-shrink:0;display:flex;align-items:center;gap:8px}
+
+    /* shelf cards */
+    .shelves{display:grid;grid-template-columns:repeat(auto-fill,minmax(390px,1fr));gap:18px}
+    .shelf-card{background:var(--sf);border:1px solid var(--b);overflow:hidden}
+    .shelf-hd{padding:14px 18px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+    .shelf-name{font-family:var(--head);font-size:17px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+    .shelf-id{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px}
+    .sensors{display:flex;gap:10px;align-items:center}
+    .sr{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+    .sr-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+    .sr-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cyan)}
+    .sh-ok{display:flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;color:var(--green);
+      margin-left:6px;padding-left:6px;border-left:1px solid var(--b)}
+    .sh-ok::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green)}
+
+    /* product table */
+    .pt{width:100%;border-collapse:collapse}
+    .pt th{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;
+      color:var(--dim);padding:9px 11px;text-align:left;border-bottom:1px solid var(--b);background:var(--sf2)}
+    .pt td{padding:11px 11px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--b)}
+    .pt tr:last-child td{border-bottom:none}
+    .pt tr:hover td{background:rgba(255,255,255,.015)}
+    .pname{font-weight:600;color:var(--text);font-size:12.5px}
+    .pbc{font-family:var(--mono);font-size:10px;color:var(--dim)}
+    .sval{font-family:var(--mono);font-weight:500}
+
+    /* badges */
+    .badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9.5px;
+      letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border:1px solid}
+    .badge.ok{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.25)}
+    .badge.low{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.critical{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.25)}
+    .badge.warning{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.urgent{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.25);animation:bp 1.4s infinite}
+    .badge.dispatched{color:var(--cyan);background:var(--cdim);border-color:rgba(0,212,255,.25)}
+    .badge.pending{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.acknowledged{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.25)}
+    @keyframes bp{0%,100%{opacity:1}50%{opacity:.55}}
+
+    /* buttons */
+    .btn{font-family:var(--head);font-size:10.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+      padding:6px 13px;border:1px solid;cursor:pointer;transition:background .18s,color .18s;background:transparent}
+    .btn-c{color:var(--cyan);border-color:var(--cyan)}.btn-c:hover{background:var(--cyan);color:#000}
+    .btn-a{color:var(--amber);border-color:var(--amber)}.btn-a:hover{background:var(--amber);color:#000}
+    .btn-r{color:var(--red);border-color:var(--red)}.btn-r:hover{background:var(--red);color:#fff}
+    .btn-g{color:var(--green);border-color:var(--green)}.btn-g:hover{background:var(--green);color:#000}
+    .btn:disabled{opacity:.3;cursor:not-allowed}.btn:disabled:hover{background:transparent!important;color:inherit!important}
+
+    /* data table */
+    .dt{width:100%;border-collapse:collapse}
+    .dt th{font-family:var(--mono);font-size:8.5px;letter-spacing:1.8px;text-transform:uppercase;
+      color:var(--dim);padding:11px 14px;text-align:left;background:var(--sf2);border-bottom:1px solid var(--b)}
+    .dt td{padding:13px 14px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--b);background:var(--sf)}
+    .dt tr:hover td{background:var(--sf2)}
+    .dt tr:last-child td{border-bottom:none}
+
+    /* event log */
+    .log-wrap{background:var(--sf);border:1px solid var(--b);max-height:300px;overflow-y:auto}
+    .log-wrap::-webkit-scrollbar{width:3px}
+    .log-wrap::-webkit-scrollbar-thumb{background:var(--bhi)}
+    .log-hd,.log-row{display:grid;grid-template-columns:155px 160px 145px 44px 90px 1fr;font-family:var(--mono);font-size:10.5px}
+    .log-hd{background:var(--sf2);border-bottom:1px solid var(--b)}
+    .log-hd>*{padding:7px 11px;font-size:8.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+    .log-row{border-bottom:1px solid var(--b)}
+    .log-row:last-child{border-bottom:none}
+    .log-row>*{padding:9px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .log-row .ts{color:var(--dim)}
+    .log-row .ev{font-weight:500}
+    .log-row .ev.SALE{color:var(--green)}
+    .log-row .ev.RESTOCK{color:var(--cyan)}
+    .log-row .ev.EXPIRY_REMOVAL{color:var(--red)}
+    .log-row .ev.ALERT_FIRED,.log-row .ev.EXPIRY_WARNING{color:var(--amber)}
+    .log-row .ev.EXPIRY_URGENT,.log-row .ev.EXPIRY_CRITICAL{color:var(--red)}
+    .log-row .ev.RESTOCK_DISPATCH,.log-row .ev.RESTOCK_REQUEST_CREATED{color:var(--cyan)}
+    .log-row .ev.RESTOCK_ACK{color:var(--green)}
+    .log-row .bc{color:var(--dim)}
+    .log-row .qty{color:var(--muted);text-align:right}
+    .log-row .usr{color:var(--cyan)}
+    .log-row .note{color:var(--dim);white-space:normal}
+
+    /* empty / loading */
+    .empty{padding:44px;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:2px;
+      text-transform:uppercase;color:var(--dim);border:1px solid var(--b);background:var(--sf)}
+    .loading{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;
+      justify-content:center;gap:11px;font-family:var(--mono);font-size:12px;letter-spacing:3px;
+      text-transform:uppercase;color:var(--cyan)}
+    .spin{width:15px;height:15px;border:2px solid var(--b);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite}
+
+    /* toast */
+    .toast{position:fixed;bottom:28px;right:28px;background:var(--sf2);border:1px solid var(--green);
+      color:var(--green);font-family:var(--mono);font-size:11px;letter-spacing:.8px;padding:11px 18px;
+      z-index:999;opacity:0;transform:translateY(12px);transition:all .25s;pointer-events:none}
+    .toast.show{opacity:1;transform:none}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .fi{animation:fi .35s ease both}
+  </style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="spin"></div>Loading shelf data...</div>
+<div class="toast" id="toast"></div>
+
+<div class="app" id="app" style="display:none">
+  <header>
+    <div class="h-left">
+      <div class="brand">Shelf<em>Sense</em></div>
+      <div class="hdiv"></div>
+      <div class="hpage">Manager Dashboard</div>
+    </div>
+    <div class="h-right">
+      <div class="live">Live</div>
+      <div class="user-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <strong>Alice Wanjiku</strong> &nbsp;·&nbsp; Supermarket Manager
+      </div>
+      <a class="back" href="index.html">← Back</a>
+    </div>
+  </header>
+
+  <main id="main"></main>
+</div>
+
+<script>
+let D = null;
+
+const $ = id => document.getElementById(id);
+
+function toast(msg, color='green') {
+  const t = $('toast');
+  t.style.borderColor = color==='red' ? 'var(--red)' : color==='amber' ? 'var(--amber)' : 'var(--green)';
+  t.style.color = color==='red' ? 'var(--red)' : color==='amber' ? 'var(--amber)' : 'var(--green)';
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+function stockBadge(s) {
+  const l={ok:'✓ OK',low:'⚠ Low',critical:'✗ Critical'};
+  return `<span class="badge ${s}">${l[s]||s}</span>`;
+}
+function expiryBadge(s) {
+  if(s==='ok') return '';
+  const l={warning:'⚠ Exp Warning',urgent:'🔴 Exp Today',critical:'🔴 Expired'};
+  return `<span class="badge ${s}">${l[s]||s}</span>`;
+}
+function restockBadge(s) {
+  return `<span class="badge ${s.toLowerCase()}">${s}</span>`;
+}
+function alertClass(t) {
+  if(t==='expiry_warning') return 'warn';
+  if(t==='low_stock'||t.includes('urgent')||t.includes('critical')) return '';
+  return 'info';
+}
+function alertIcon(t) {
+  if(t==='low_stock')       return '📦';
+  if(t==='expiry_urgent'||t==='expiry_critical') return '🔴';
+  if(t==='expiry_warning')  return '⚠️';
+  return 'ℹ️';
+}
+function alertTypeLabel(t) {
+  return {low_stock:'Low Stock',expiry_warning:'Expiry Warning',
+          expiry_urgent:'Expiry Urgent',expiry_critical:'Expiry Critical',
+          discrepancy:'Discrepancy'}[t] || t;
+}
+function pname(bc) {
+  if(!D) return bc;
+  for(const s of D.shelves) for(const p of s.products) if(p.barcode===bc) return p.name;
+  return bc;
+}
+function shelfName(id) {
+  const s=D.shelves.find(s=>s.id===id); return s?s.name:id;
+}
+function coName(id) {
+  const c=D.companies.find(c=>c.id===id); return c?c.name:id;
+}
+
+function renderStats() {
+  const ls = D.alerts.filter(a=>a.type==='low_stock').length;
+  const ex = D.alerts.filter(a=>a.type.startsWith('expiry')).length;
+  const rp = D.restockRequests.filter(r=>r.status==='Pending').length;
+  return `<div class="stats fi">
+    <div class="stat c"><div class="stat-lbl">Total Shelves</div><div class="stat-val vc">${D.shelves.length}</div></div>
+    <div class="stat r"><div class="stat-lbl">Low Stock Alerts</div><div class="stat-val vr">${ls}</div></div>
+    <div class="stat a"><div class="stat-lbl">Expiry Alerts</div><div class="stat-val va">${ex}</div></div>
+    <div class="stat ${rp>0?'a':'g'}"><div class="stat-lbl">Restocks Pending</div><div class="stat-val ${rp>0?'va':'vg'}">${rp}</div></div>
+  </div>`;
+}
+
+function renderAlerts() {
+  const n = D.alerts.length;
+  let h = `<div class="sh fi"><h2>Active Alerts</h2><span class="cnt cnt-r">${n} active</span><div class="rule"></div></div>
+            <div class="alerts fi" id="alerts-box">`;
+  if(!n) { h+='</div>'; return h; }
+  D.alerts.forEach(a=>{
+    const cls=alertClass(a.type);
+    const done=a.acknowledgedBySupermarket;
+    h+=`<div class="ac ${cls}" id="ac-${a.id}" style="${done?'opacity:.4':''}">
+      <div class="aico">${alertIcon(a.type)}</div>
+      <div class="abody">
+        <div class="atype ${cls}">${alertTypeLabel(a.type)} — ${a.id}</div>
+        <div class="amsg">${a.message}</div>
+        <div class="ameta">Shelf: ${shelfName(a.shelfId)} &nbsp;·&nbsp; <span style="font-family:var(--mono)">${a.productBarcode}</span> &nbsp;·&nbsp; ${a.timestamp}</div>
+      </div>
+      <div class="aact">
+        ${done?'<span class="badge ok">Acknowledged</span>':`<button class="btn btn-c" onclick="ackAlert('${a.id}')">Ack Alert</button>`}
+      </div>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+function renderShelves() {
+  let h=`<div class="sh fi"><h2>Shelf Status</h2><span class="cnt cnt-c">${D.shelves.length} shelves</span><div class="rule"></div></div>
+         <div class="shelves fi">`;
+  D.shelves.forEach(shelf=>{
+    h+=`<div class="shelf-card">
+      <div class="shelf-hd">
+        <div><div class="shelf-name">${shelf.name}</div><div class="shelf-id">${shelf.id}</div></div>
+        <div class="sensors">
+          <div class="sr"><div class="sr-lbl">Weight</div><div class="sr-val">${shelf.weightReading.toFixed(0)}g</div></div>
+          <div class="sr"><div class="sr-lbl">IR</div><div class="sr-val">${shelf.irReading.toFixed(1)}cm</div></div>
+          <div class="sh-ok">${shelf.sensorsHealthy?'Healthy':'FAULT'}</div>
+        </div>
+      </div>
+      <table class="pt"><thead><tr>
+        <th>Product</th><th>SKU</th><th>Stock</th><th>Status</th><th>Expiry</th><th>Action</th>
+      </tr></thead><tbody>`;
+    shelf.products.forEach(p=>{
+      const sc=p.stockStatus==='critical'?'var(--red)':p.stockStatus==='low'?'var(--amber)':'var(--green)';
+      h+=`<tr>
+        <td><div class="pname">${p.name}</div><div class="pbc">${p.barcode}</div></td>
+        <td style="font-family:var(--mono);font-size:10.5px;color:var(--dim)">${p.sku}</td>
+        <td class="sval" style="color:${sc}">${p.currentStock}<span style="color:var(--dim);font-size:10px"> /thr:${p.threshold}</span></td>
+        <td>${stockBadge(p.stockStatus)}</td>
+        <td>${p.isPerishable&&p.expiryDate?
+          `<span style="font-family:var(--mono);font-size:10.5px">${p.expiryDate}</span> ${expiryBadge(p.expiryStatus)}`
+          :'<span style="color:var(--dim);font-size:11px">—</span>'}
+        </td>
+        <td>${(p.expiryStatus==='critical'||p.expiryStatus==='urgent')
+          ?`<button class="btn btn-r" style="font-size:9.5px;padding:4px 9px" onclick="removeExpired('${p.barcode}','${p.name}')">Remove Expired</button>`
+          :'<span style="color:var(--dim);font-size:11px">—</span>'}
+        </td>
+      </tr>`;
+    });
+    h+=`</tbody></table></div>`;
+  });
+  return h+'</div>';
+}
+
+function renderRestock() {
+  const rr=D.restockRequests;
+  let h=`<div class="sh fi"><h2>Restock Requests</h2><span class="cnt cnt-a">${rr.length} requests</span><div class="rule"></div></div>`;
+  if(!rr.length) return h+`<div class="empty">No restock requests</div>`;
+  h+=`<table class="dt fi" id="rr-table"><thead><tr>
+    <th>ID</th><th>Product</th><th>Shelf</th><th>Company</th><th>Status</th><th>Qty</th><th>ETA</th><th>Action</th>
+  </tr></thead><tbody>`;
+  rr.forEach(r=>{
+    h+=`<tr id="rr-${r.id}">
+      <td style="font-family:var(--mono);color:var(--cyan)">${r.id}</td>
+      <td><div style="font-weight:600;color:var(--text)">${pname(r.productBarcode)}</div>
+          <div style="font-family:var(--mono);font-size:9.5px;color:var(--dim)">${r.productBarcode}</div></td>
+      <td style="font-family:var(--mono);font-size:10.5px">${shelfName(r.shelfId)}</td>
+      <td>${coName(r.companyId)}</td>
+      <td id="rrs-${r.id}">${restockBadge(r.status)}</td>
+      <td style="font-family:var(--mono);color:${r.quantityDispatched>0?'var(--cyan)':'var(--dim)'}">
+        ${r.quantityDispatched>0?r.quantityDispatched+' units':'—'}
+      </td>
+      <td style="font-family:var(--mono);font-size:10.5px">${r.dispatchDate||'—'}</td>
+      <td id="rra-${r.id}">
+        ${r.status==='Dispatched'
+          ?`<button class="btn btn-g" style="font-size:9.5px;padding:4px 9px" onclick="ackRestock('${r.id}')">Acknowledge</button>`
+          :'<span style="color:var(--dim);font-size:11px">—</span>'}
+      </td>
+    </tr>`;
+  });
+  return h+'</tbody></table>';
+}
+
+function renderLog() {
+  const evs=D.eventLog;
+  let h=`<div class="sh fi"><h2>Event Log</h2><span class="cnt cnt-c">${evs.length} events</span><div class="rule"></div></div>
+    <div class="log-wrap fi">
+      <div class="log-hd"><div>Timestamp</div><div>Event</div><div>Barcode</div><div>Qty</div><div>User</div><div>Note</div></div>`;
+  [...evs].reverse().forEach(e=>{
+    h+=`<div class="log-row">
+      <div class="ts">${e.timestamp}</div>
+      <div class="ev ${e.event}">${e.event}</div>
+      <div class="bc">${e.barcode||'—'}</div>
+      <div class="qty">${e.quantity}</div>
+      <div class="usr">${e.userId}</div>
+      <div class="note">${e.note}</div>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+// actions (UI-only — simulation)
+function ackAlert(id) {
+  const card=$(`ac-${id}`);
+  if(card){ card.style.opacity='.4'; const b=card.querySelector('button'); if(b){ const s=document.createElement('span'); s.className='badge ok'; s.textContent='Acknowledged'; b.replaceWith(s); }}
+  toast(`✓ Alert ${id} acknowledged`);
+}
+function ackRestock(id) {
+  const s=$(`rrs-${id}`), a=$(`rra-${id}`);
+  if(s) s.innerHTML='<span class="badge acknowledged">Acknowledged</span>';
+  if(a) a.innerHTML='<span style="color:var(--green);font-family:var(--mono);font-size:10.5px">✓ Done</span>';
+  toast(`✓ Restock ${id} acknowledged`);
+}
+function removeExpired(bc, name) { toast(`🗑 "${name}" flagged for removal`,'amber'); }
+
+async function init() {
+  try {
+    D = await fetch('./data.json').then(r=>r.json());
+    $('main').innerHTML = renderStats()+renderAlerts()+renderShelves()+renderRestock()+renderLog();
+    $('loading').style.display='none';
+    $('app').style.display='flex';
+  } catch(e) {
+    $('loading').innerHTML='<span style="color:var(--red)">ERROR: Could not load data.json — run the C++ simulation first, then serve this folder with a local server.</span>';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

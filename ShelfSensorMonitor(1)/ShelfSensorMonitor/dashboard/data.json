@@ -1,0 +1,339 @@
+{
+  "generatedAt": "2026-05-19T15:49:46",
+  "supermarket": {
+    "id": "SM001",
+    "name": "FreshMart Nairobi",
+    "location": "Westlands, Nairobi"
+  },
+  "companies": [
+    {"id":"C001","name":"Brookside Dairy Ltd","email":"rep@brookside.co.ke"},
+    {"id":"C002","name":"Unga Group Ltd","email":"rep@unga.co.ke"}
+  ],
+  "shelves": [
+    {
+      "id": "SH001",
+      "name": "Dairy Shelf A",
+      "weightReading": 10019.5,
+      "irReading": 35.0,
+      "sensorsHealthy": true,
+      "products": [
+        {
+          "barcode": "5901234123457",
+          "sku": "BRK-MILK-1L",
+          "name": "Brookside Full Cream Milk 1L",
+          "companyId": "C001",
+          "currentStock": 3,
+          "threshold": 10,
+          "isPerishable": true,
+          "expiryDate": "2026-05-14",
+          "stockStatus": "low",
+          "expiryStatus": "critical"
+        },
+        {
+          "barcode": "5901234123464",
+          "sku": "BRK-YOG-500",
+          "name": "Brookside Strawberry Yogurt 500ml",
+          "companyId": "C001",
+          "currentStock": 12,
+          "threshold": 8,
+          "isPerishable": true,
+          "expiryDate": "2026-05-13",
+          "stockStatus": "ok",
+          "expiryStatus": "critical"
+        },
+        {
+          "barcode": "5901234123495",
+          "sku": "BRK-BTR-250",
+          "name": "Brookside Butter 250g",
+          "companyId": "C001",
+          "currentStock": 2,
+          "threshold": 6,
+          "isPerishable": true,
+          "expiryDate": "2026-05-16",
+          "stockStatus": "low",
+          "expiryStatus": "critical"
+        }
+      ]
+    },
+    {
+      "id": "SH002",
+      "name": "Cereals Shelf B",
+      "weightReading": 11550.3,
+      "irReading": 28.0,
+      "sensorsHealthy": true,
+      "products": [
+        {
+          "barcode": "5901234123471",
+          "sku": "UNG-MAIZE-2K",
+          "name": "Unga Jogoo Maize Flour 2kg",
+          "companyId": "C002",
+          "currentStock": 4,
+          "threshold": 5,
+          "isPerishable": false,
+          "expiryDate": "",
+          "stockStatus": "low",
+          "expiryStatus": "ok"
+        },
+        {
+          "barcode": "5901234123488",
+          "sku": "UNG-WHEAT-1K",
+          "name": "Unga Ngano Wheat Flour 1kg",
+          "companyId": "C002",
+          "currentStock": 3,
+          "threshold": 5,
+          "isPerishable": false,
+          "expiryDate": "",
+          "stockStatus": "low",
+          "expiryStatus": "ok"
+        }
+      ]
+    },
+    {
+      "id": "SH003",
+      "name": "Mixed Shelf C",
+      "weightReading": 3639.1,
+      "irReading": 8.0,
+      "sensorsHealthy": true,
+      "products": [
+        {
+          "barcode": "5901234123501",
+          "sku": "UNG-MND-500",
+          "name": "Unga Mandazi Mix 500g",
+          "companyId": "C002",
+          "currentStock": 7,
+          "threshold": 4,
+          "isPerishable": false,
+          "expiryDate": "",
+          "stockStatus": "ok",
+          "expiryStatus": "ok"
+        }
+      ]
+    }
+  ],
+  "alerts": [
+    {
+      "id": "ALT1",
+      "type": "expiry_critical",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123457",
+      "companyId": "C001",
+      "message": "CRITICAL — Brookside Full Cream Milk 1L has EXPIRED. Remove immediately.",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    },
+    {
+      "id": "ALT2",
+      "type": "expiry_critical",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123464",
+      "companyId": "C001",
+      "message": "CRITICAL — Brookside Strawberry Yogurt 500ml has EXPIRED. Remove immediately.",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    },
+    {
+      "id": "ALT3",
+      "type": "expiry_critical",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123495",
+      "companyId": "C001",
+      "message": "CRITICAL — Brookside Butter 250g has EXPIRED. Remove immediately.",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    },
+    {
+      "id": "ALT4",
+      "type": "low_stock",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123457",
+      "companyId": "C001",
+      "message": "Low stock: Brookside Full Cream Milk 1L (3 units remaining on Dairy Shelf A)",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    },
+    {
+      "id": "ALT5",
+      "type": "low_stock",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123495",
+      "companyId": "C001",
+      "message": "Low stock: Brookside Butter 250g (2 units remaining on Dairy Shelf A)",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    },
+    {
+      "id": "ALT6",
+      "type": "low_stock",
+      "shelfId": "SH002",
+      "productBarcode": "5901234123471",
+      "companyId": "C002",
+      "message": "Low stock: Unga Jogoo Maize Flour 2kg (4 units remaining on Cereals Shelf B)",
+      "timestamp": "2026-05-19T15:49:46",
+      "acknowledgedBySupermarket": false,
+      "acknowledgedByCompany": false
+    }
+  ],
+  "restockRequests": [
+    {
+      "id": "RR001",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123457",
+      "companyId": "C001",
+      "supermarketId": "SM001",
+      "status": "Dispatched",
+      "quantityDispatched": 24,
+      "dispatchDate": "2026-05-14",
+      "acknowledgedBy": "",
+      "acknowledgedAt": "",
+      "createdAt": "2026-05-19T15:49:46",
+      "alertId": "ALT4"
+    },
+    {
+      "id": "RR002",
+      "shelfId": "SH001",
+      "productBarcode": "5901234123495",
+      "companyId": "C001",
+      "supermarketId": "SM001",
+      "status": "Pending",
+      "quantityDispatched": 0,
+      "dispatchDate": "",
+      "acknowledgedBy": "",
+      "acknowledgedAt": "",
+      "createdAt": "2026-05-19T15:49:46",
+      "alertId": "ALT5"
+    },
+    {
+      "id": "RR003",
+      "shelfId": "SH002",
+      "productBarcode": "5901234123471",
+      "companyId": "C002",
+      "supermarketId": "SM001",
+      "status": "Pending",
+      "quantityDispatched": 0,
+      "dispatchDate": "",
+      "acknowledgedBy": "",
+      "acknowledgedAt": "",
+      "createdAt": "2026-05-19T15:49:46",
+      "alertId": "ALT6"
+    }
+  ],
+  "eventLog": [
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "EXPIRY_CRITICAL",
+      "barcode": "5901234123457",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "CRITICAL — Brookside Full Cream Milk 1L has EXPIRED. Remove immediately."
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "EXPIRY_CRITICAL",
+      "barcode": "5901234123464",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "CRITICAL — Brookside Strawberry Yogurt 500ml has EXPIRED. Remove immediately."
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "EXPIRY_CRITICAL",
+      "barcode": "5901234123495",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "CRITICAL — Brookside Butter 250g has EXPIRED. Remove immediately."
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "ALERT_FIRED",
+      "barcode": "5901234123457",
+      "quantity": 3,
+      "userId": "SYSTEM",
+      "note": "Low stock: Brookside Full Cream Milk 1L (3 units remaining on Dairy Shelf A)"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "ALERT_FIRED",
+      "barcode": "5901234123495",
+      "quantity": 2,
+      "userId": "SYSTEM",
+      "note": "Low stock: Brookside Butter 250g (2 units remaining on Dairy Shelf A)"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "ALERT_FIRED",
+      "barcode": "5901234123471",
+      "quantity": 4,
+      "userId": "SYSTEM",
+      "note": "Low stock: Unga Jogoo Maize Flour 2kg (4 units remaining on Cereals Shelf B)"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "RESTOCK_REQUEST_CREATED",
+      "barcode": "5901234123457",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "Request RR001 for shelf SH001"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "RESTOCK_REQUEST_CREATED",
+      "barcode": "5901234123495",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "Request RR002 for shelf SH001"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "RESTOCK_REQUEST_CREATED",
+      "barcode": "5901234123471",
+      "quantity": 0,
+      "userId": "SYSTEM",
+      "note": "Request RR003 for shelf SH002"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "RESTOCK_DISPATCH",
+      "barcode": "5901234123457",
+      "quantity": 24,
+      "userId": "REP001",
+      "note": "Dispatched RR001. ETA: 2026-05-14"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "SALE",
+      "barcode": "5901234123488",
+      "quantity": 2,
+      "userId": "MGR001",
+      "note": "Sale on shelf SH002"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "SALE",
+      "barcode": "5901234123488",
+      "quantity": 1,
+      "userId": "MGR001",
+      "note": "Sale on shelf SH002"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "SALE",
+      "barcode": "5901234123488",
+      "quantity": 1,
+      "userId": "MGR001",
+      "note": "Sale on shelf SH002"
+    },
+    {
+      "timestamp": "2026-05-19T15:49:46",
+      "event": "SALE",
+      "barcode": "5901234123488",
+      "quantity": 1,
+      "userId": "MGR001",
+      "note": "Sale on shelf SH002"
+    }
+  ]
+}

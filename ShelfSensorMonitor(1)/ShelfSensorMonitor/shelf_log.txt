@@ -1,0 +1,14 @@
+[2026-05-19T15:49:46] EXPIRY_CRITICAL | bc=5901234123457 | qty=0 | user=SYSTEM | CRITICAL — Brookside Full Cream Milk 1L has EXPIRED. Remove immediately.
+[2026-05-19T15:49:46] EXPIRY_CRITICAL | bc=5901234123464 | qty=0 | user=SYSTEM | CRITICAL — Brookside Strawberry Yogurt 500ml has EXPIRED. Remove immediately.
+[2026-05-19T15:49:46] EXPIRY_CRITICAL | bc=5901234123495 | qty=0 | user=SYSTEM | CRITICAL — Brookside Butter 250g has EXPIRED. Remove immediately.
+[2026-05-19T15:49:46] ALERT_FIRED | bc=5901234123457 | qty=3 | user=SYSTEM | Low stock: Brookside Full Cream Milk 1L (3 units remaining on Dairy Shelf A)
+[2026-05-19T15:49:46] ALERT_FIRED | bc=5901234123495 | qty=2 | user=SYSTEM | Low stock: Brookside Butter 250g (2 units remaining on Dairy Shelf A)
+[2026-05-19T15:49:46] ALERT_FIRED | bc=5901234123471 | qty=4 | user=SYSTEM | Low stock: Unga Jogoo Maize Flour 2kg (4 units remaining on Cereals Shelf B)
+[2026-05-19T15:49:46] RESTOCK_REQUEST_CREATED | bc=5901234123457 | qty=0 | user=SYSTEM | Request RR001 for shelf SH001
+[2026-05-19T15:49:46] RESTOCK_REQUEST_CREATED | bc=5901234123495 | qty=0 | user=SYSTEM | Request RR002 for shelf SH001
+[2026-05-19T15:49:46] RESTOCK_REQUEST_CREATED | bc=5901234123471 | qty=0 | user=SYSTEM | Request RR003 for shelf SH002
+[2026-05-19T15:49:46] RESTOCK_DISPATCH | bc=5901234123457 | qty=24 | user=REP001 | Dispatched RR001. ETA: 2026-05-14
+[2026-05-19T15:49:46] SALE | bc=5901234123488 | qty=2 | user=MGR001 | Sale on shelf SH002
+[2026-05-19T15:49:46] SALE | bc=5901234123488 | qty=1 | user=MGR001 | Sale on shelf SH002
+[2026-05-19T15:49:46] SALE | bc=5901234123488 | qty=1 | user=MGR001 | Sale on shelf SH002
+[2026-05-19T15:49:46] SALE | bc=5901234123488 | qty=1 | user=MGR001 | Sale on shelf SH002

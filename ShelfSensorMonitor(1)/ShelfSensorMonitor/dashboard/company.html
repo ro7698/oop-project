@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShelfSense — Company Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0c10;--sf:#0f1520;--sf2:#161f2e;
+      --b:#1a2840;--bhi:#243550;
+      --amber:#f59e0b;--adim:rgba(245,158,11,.1);--aglow:rgba(245,158,11,.18);
+      --cyan:#00d4ff;--cdim:rgba(0,212,255,.08);
+      --red:#ef4444;--rdim:rgba(239,68,68,.1);
+      --green:#10b981;--gdim:rgba(16,185,129,.1);
+      --text:#e2e8f0;--muted:#94a3b8;--dim:#3d5470;
+      --head:'Barlow Condensed',sans-serif;--body:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+    }
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{font-family:var(--body);color:var(--text);min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;
+      background-image:radial-gradient(circle,rgba(245,158,11,.04) 1px,transparent 1px);
+      background-size:28px 28px;pointer-events:none;z-index:0}
+
+    .app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
+
+    /* header */
+    header{position:sticky;top:0;z-index:100;background:rgba(10,12,16,.97);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--b);padding:0 28px;height:56px;
+      display:flex;align-items:center;justify-content:space-between}
+    .h-left{display:flex;align-items:center;gap:14px}
+    .brand{font-family:var(--head);font-size:20px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .brand em{color:var(--amber);font-style:normal}
+    .hdiv{width:1px;height:22px;background:var(--bhi)}
+    .hpage{font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+    .h-right{display:flex;align-items:center;gap:14px}
+    .live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green)}
+    .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+    .back{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--dim);text-decoration:none;border:1px solid var(--b);padding:4px 9px;transition:color .2s,border-color .2s}
+    .back:hover{color:var(--amber);border-color:var(--amber)}
+
+    main{flex:1;padding:28px;max-width:1300px;width:100%;margin:0 auto}
+
+    /* company selector screen */
+    .selector{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      min-height:70vh;gap:32px}
+    .sel-title{font-family:var(--head);font-size:14px;font-weight:700;letter-spacing:3px;
+      text-transform:uppercase;color:var(--dim)}
+    .sel-cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+    .sel-card{background:var(--sf);border:1px solid var(--b);padding:28px 36px;cursor:pointer;
+      text-align:center;transition:border-color .2s,transform .2s,box-shadow .2s;min-width:200px;position:relative;overflow:hidden}
+    .sel-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);transform:scaleX(0);transition:transform .22s}
+    .sel-card:hover::before{transform:scaleX(1)}
+    .sel-card:hover{border-color:var(--bhi);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.5),0 0 24px var(--aglow)}
+    .sel-name{font-family:var(--head);font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+    .sel-id{font-family:var(--mono);font-size:10px;color:var(--amber)}
+
+    /* section heads */
+    .sh{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:36px}
+    .sh:first-child{margin-top:0}
+    .sh h2{font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+    .sh .rule{flex:1;height:1px;background:var(--b)}
+    .cnt{font-family:var(--mono);font-size:10px;padding:2px 7px;border:1px solid}
+    .cnt-a{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .cnt-r{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.2)}
+    .cnt-c{color:var(--cyan);background:var(--cdim);border-color:rgba(0,212,255,.2)}
+    .cnt-g{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.2)}
+
+    /* co banner */
+    .co-banner{background:var(--sf);border:1px solid var(--b);border-left:3px solid var(--amber);
+      padding:16px 22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+    .co-name{font-family:var(--head);font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber)}
+    .co-meta{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:3px}
+    .change-btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--dim);
+      background:transparent;border:1px solid var(--b);padding:5px 10px;cursor:pointer;transition:color .2s,border-color .2s}
+    .change-btn:hover{color:var(--amber);border-color:var(--amber)}
+
+    /* stats */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:0}
+    .stat{background:var(--sf);border:1px solid var(--b);padding:18px 22px;position:relative;overflow:hidden}
+    .stat::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+    .stat.a::after{background:var(--amber)}.stat.r::after{background:var(--red)}
+    .stat.c::after{background:var(--cyan)}.stat.g::after{background:var(--green)}
+    .stat-lbl{font-family:var(--head);font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+    .stat-val{font-family:var(--head);font-size:38px;font-weight:800;line-height:1}
+    .va{color:var(--amber)}.vr{color:var(--red)}.vc{color:var(--cyan)}.vg{color:var(--green)}
+
+    /* products table */
+    .dt{width:100%;border-collapse:collapse}
+    .dt th{font-family:var(--mono);font-size:8.5px;letter-spacing:1.8px;text-transform:uppercase;
+      color:var(--dim);padding:11px 14px;text-align:left;background:var(--sf2);border-bottom:1px solid var(--b)}
+    .dt td{padding:13px 14px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--b);background:var(--sf)}
+    .dt tr:hover td{background:var(--sf2)}
+    .dt tr:last-child td{border-bottom:none}
+
+    /* badges */
+    .badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9.5px;
+      letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border:1px solid}
+    .badge.ok{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.25)}
+    .badge.low{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.critical{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.25)}
+    .badge.warning{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.urgent{color:var(--red);background:var(--rdim);border-color:rgba(239,68,68,.25);animation:bp 1.4s infinite}
+    .badge.dispatched{color:var(--cyan);background:var(--cdim);border-color:rgba(0,212,255,.25)}
+    .badge.pending{color:var(--amber);background:var(--adim);border-color:rgba(245,158,11,.25)}
+    .badge.acknowledged{color:var(--green);background:var(--gdim);border-color:rgba(16,185,129,.25)}
+    @keyframes bp{0%,100%{opacity:1}50%{opacity:.55}}
+
+    /* buttons */
+    .btn{font-family:var(--head);font-size:10.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+      padding:6px 13px;border:1px solid;cursor:pointer;transition:background .18s,color .18s;background:transparent}
+    .btn-a{color:var(--amber);border-color:var(--amber)}.btn-a:hover{background:var(--amber);color:#000}
+    .btn-c{color:var(--cyan);border-color:var(--cyan)}.btn-c:hover{background:var(--cyan);color:#000}
+    .btn-r{color:var(--red);border-color:var(--red)}.btn-r:hover{background:var(--red);color:#fff}
+    .btn:disabled{opacity:.3;cursor:not-allowed}
+
+    /* alert cards */
+    .alerts{display:flex;flex-direction:column;gap:9px}
+    .ac{background:var(--sf);border:1px solid var(--b);border-left:3px solid var(--red);padding:14px 18px;
+      display:flex;align-items:flex-start;gap:14px;transition:opacity .3s}
+    .ac.warn{border-left-color:var(--amber)}
+    .aico{font-size:18px;flex-shrink:0;margin-top:1px}
+    .abody{flex:1}
+    .atype{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+    .atype.warn{color:var(--amber)}
+    .amsg{font-size:13px;font-weight:500;color:var(--text);line-height:1.4}
+    .ameta{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:3px}
+
+    /* dispatch modal */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center}
+    .modal{background:var(--sf);border:1px solid var(--bhi);padding:30px;width:400px;max-width:90vw}
+    .modal-title{font-family:var(--head);font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;color:var(--amber)}
+    .modal label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:5px;margin-top:14px}
+    .modal input{width:100%;background:var(--sf2);border:1px solid var(--b);color:var(--text);
+      font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s}
+    .modal input:focus{border-color:var(--amber)}
+    .modal-btns{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}
+
+    /* empty / loading */
+    .empty{padding:44px;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:2px;
+      text-transform:uppercase;color:var(--dim);border:1px solid var(--b);background:var(--sf)}
+    .loading{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;
+      justify-content:center;gap:11px;font-family:var(--mono);font-size:12px;letter-spacing:3px;
+      text-transform:uppercase;color:var(--amber)}
+    .spin{width:15px;height:15px;border:2px solid var(--b);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite}
+
+    .toast{position:fixed;bottom:28px;right:28px;background:var(--sf2);border:1px solid var(--amber);
+      color:var(--amber);font-family:var(--mono);font-size:11px;letter-spacing:.8px;padding:11px 18px;
+      z-index:999;opacity:0;transform:translateY(12px);transition:all .25s;pointer-events:none}
+    .toast.show{opacity:1;transform:none}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .fi{animation:fi .35s ease both}
+  </style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="spin"></div>Loading company data...</div>
+<div class="toast" id="toast"></div>
+
+<div class="app" id="app" style="display:none">
+  <header>
+    <div class="h-left">
+      <div class="brand">Shelf<em>Sense</em></div>
+      <div class="hdiv"></div>
+      <div class="hpage">Company Dashboard</div>
+    </div>
+    <div class="h-right">
+      <div class="live">Live</div>
+      <a class="back" href="index.html">← Back</a>
+    </div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script>
+let D = null;
+let CID = null;   // currently selected company id
+let pendingDispatch = null; // requestId being dispatched
+
+const $ = id => document.getElementById(id);
+
+function toast(msg) {
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function coInfo(id) { return D.companies.find(c=>c.id===id)||{name:id,email:''}; }
+function pname(bc) {
+  for(const s of D.shelves) for(const p of s.products) if(p.barcode===bc) return p.name;
+  return bc;
+}
+function shelfName(id) { const s=D.shelves.find(s=>s.id===id); return s?s.name:id; }
+
+function stockBadge(s) {
+  const l={ok:'✓ OK',low:'⚠ Low',critical:'✗ Critical'};
+  return `<span class="badge ${s}">${l[s]||s}</span>`;
+}
+function expiryBadge(s) {
+  if(s==='ok') return '';
+  const l={warning:'⚠ Exp Warning',urgent:'🔴 Exp Today',critical:'🔴 Expired'};
+  return `<span class="badge ${s}">${l[s]||s}</span>`;
+}
+function restockBadge(s) { return `<span class="badge ${s.toLowerCase()}">${s}</span>`; }
+
+// ── Selector screen ───────────────────────────────────────────────────────────
+function renderSelector() {
+  let cards = D.companies.map(c=>`
+    <div class="sel-card" onclick="selectCompany('${c.id}')">
+      <div class="sel-name">${c.name}</div>
+      <div class="sel-id">${c.id} · ${c.email}</div>
+    </div>`).join('');
+  $('main').innerHTML=`
+    <div class="selector fi">
+      <div class="sel-title">Select your company to continue</div>
+      <div class="sel-cards">${cards}</div>
+    </div>`;
+}
+
+function selectCompany(id) {
+  CID = id;
+  renderDashboard();
+}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const co = coInfo(CID);
+
+  // Gather my products across all shelves
+  const myProds = [];
+  D.shelves.forEach(shelf=>{
+    shelf.products.forEach((p,i)=>{
+      if(p.companyId===CID)
+        myProds.push({...p, stock: shelf.stockCounts?shelf.stockCounts[i]:p.currentStock,
+                      shelfId: shelf.id, shelfName: shelf.name});
+    });
+  });
+
+  const myAlerts = D.alerts.filter(a=>a.companyId===CID);
+  const myReqs   = D.restockRequests.filter(r=>r.companyId===CID);
+  const lowCount = myProds.filter(p=>p.stockStatus==='low'||p.stockStatus==='critical').length;
+  const rPending = myReqs.filter(r=>r.status==='Pending').length;
+
+  let h = '';
+
+  // Co banner
+  h+=`<div class="co-banner fi">
+    <div>
+      <div class="co-name">${co.name}</div>
+      <div class="co-meta">${co.id} &nbsp;·&nbsp; ${co.email}</div>
+    </div>
+    <button class="change-btn" onclick="changeCompany()">Change Company</button>
+  </div>`;
+
+  // Stats
+  h+=`<div class="stats fi">
+    <div class="stat a"><div class="stat-lbl">My Products</div><div class="stat-val va">${myProds.length}</div></div>
+    <div class="stat ${lowCount>0?'r':'g'}"><div class="stat-lbl">Low / Critical</div><div class="stat-val ${lowCount>0?'vr':'vg'}">${lowCount}</div></div>
+    <div class="stat ${myAlerts.length>0?'r':'g'}"><div class="stat-lbl">My Alerts</div><div class="stat-val ${myAlerts.length>0?'vr':'vg'}">${myAlerts.length}</div></div>
+    <div class="stat ${rPending>0?'a':'g'}"><div class="stat-lbl">Restocks Pending</div><div class="stat-val ${rPending>0?'va':'vg'}">${rPending}</div></div>
+  </div>`;
+
+  // Alerts
+  h+=`<div class="sh fi"><h2>My Alerts</h2><span class="cnt cnt-r">${myAlerts.length} active</span><div class="rule"></div></div>`;
+  if(!myAlerts.length) {
+    h+=`<div class="empty fi">No active alerts for your products</div>`;
+  } else {
+    h+=`<div class="alerts fi" id="alerts-box">`;
+    myAlerts.forEach(a=>{
+      const warn=a.type==='expiry_warning';
+      const icon=a.type==='low_stock'?'📦':a.type==='expiry_urgent'?'🔴':'⚠️';
+      const typeLabel={low_stock:'Low Stock',expiry_warning:'Expiry Warning',expiry_urgent:'Expiry Urgent',expiry_critical:'Expiry Critical'}[a.type]||a.type;
+      h+=`<div class="ac ${warn?'warn':''}" id="ac-${a.id}">
+        <div class="aico">${icon}</div>
+        <div class="abody">
+          <div class="atype ${warn?'warn':''}">${typeLabel} — ${a.id}</div>
+          <div class="amsg">${a.message}</div>
+          <div class="ameta">Shelf: ${shelfName(a.shelfId)} &nbsp;·&nbsp; <span style="font-family:var(--mono)">${a.productBarcode}</span> &nbsp;·&nbsp; ${a.timestamp}</div>
+        </div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  // Products
+  h+=`<div class="sh fi"><h2>My Products on Shelf</h2><span class="cnt cnt-a">${myProds.length} products</span><div class="rule"></div></div>`;
+  if(!myProds.length) {
+    h+=`<div class="empty fi">No products on shelves</div>`;
+  } else {
+    h+=`<table class="dt fi"><thead><tr>
+      <th>Product</th><th>Barcode</th><th>Shelf</th><th>Stock</th><th>Threshold</th><th>Stock Status</th><th>Expiry</th><th>Expiry Status</th>
+    </tr></thead><tbody>`;
+    myProds.forEach(p=>{
+      const sc=p.stockStatus==='critical'?'var(--red)':p.stockStatus==='low'?'var(--amber)':'var(--green)';
+      h+=`<tr>
+        <td><div style="font-weight:600;color:var(--text)">${p.name}</div>
+            <div style="font-family:var(--mono);font-size:9.5px;color:var(--dim)">${p.sku}</div></td>
+        <td style="font-family:var(--mono);font-size:10.5px;color:var(--dim)">${p.barcode}</td>
+        <td>${p.shelfName}</td>
+        <td style="font-family:var(--mono);font-weight:500;color:${sc}">${p.currentStock}</td>
+        <td style="font-family:var(--mono);font-size:10.5px;color:var(--dim)">${p.threshold}</td>
+        <td>${stockBadge(p.stockStatus)}</td>
+        <td style="font-family:var(--mono);font-size:10.5px">${p.expiryDate||'—'}</td>
+        <td>${p.isPerishable&&p.expiryDate?expiryBadge(p.expiryStatus):'<span style="color:var(--dim)">N/A</span>'}</td>
+      </tr>`;
+    });
+    h+=`</tbody></table>`;
+  }
+
+  // Restock Requests
+  h+=`<div class="sh fi"><h2>Restock Requests</h2><span class="cnt cnt-a">${myReqs.length} requests</span><div class="rule"></div></div>`;
+  if(!myReqs.length) {
+    h+=`<div class="empty fi">No restock requests</div>`;
+  } else {
+    h+=`<table class="dt fi" id="rr-table"><thead><tr>
+      <th>ID</th><th>Product</th><th>Shelf</th><th>Status</th><th>Qty Dispatched</th><th>ETA</th><th>Acked By</th><th>Created</th><th>Action</th>
+    </tr></thead><tbody>`;
+    myReqs.forEach(r=>{
+      h+=`<tr>
+        <td style="font-family:var(--mono);color:var(--amber)">${r.id}</td>
+        <td><div style="font-weight:600;color:var(--text)">${pname(r.productBarcode)}</div>
+            <div style="font-family:var(--mono);font-size:9.5px;color:var(--dim)">${r.productBarcode}</div></td>
+        <td>${shelfName(r.shelfId)}</td>
+        <td id="rrs-${r.id}">${restockBadge(r.status)}</td>
+        <td style="font-family:var(--mono);color:${r.quantityDispatched>0?'var(--cyan)':'var(--dim)'}">
+          ${r.quantityDispatched>0?r.quantityDispatched+' units':'—'}
+        </td>
+        <td style="font-family:var(--mono);font-size:10.5px">${r.dispatchDate||'—'}</td>
+        <td style="font-family:var(--mono);font-size:10.5px;color:var(--dim)">${r.acknowledgedBy||'—'}</td>
+        <td style="font-family:var(--mono);font-size:10px;color:var(--dim)">${r.createdAt}</td>
+        <td id="rra-${r.id}">
+          ${r.status==='Pending'
+            ?`<button class="btn btn-a" style="font-size:9.5px;padding:4px 9px" onclick="openDispatch('${r.id}')">Dispatch</button>`
+            :r.status==='Dispatched'
+              ?'<span style="color:var(--cyan);font-family:var(--mono);font-size:10px">Awaiting ack</span>'
+              :'<span style="color:var(--green);font-family:var(--mono);font-size:10px">✓ Complete</span>'}
+        </td>
+      </tr>`;
+    });
+    h+=`</tbody></table>`;
+  }
+
+  $('main').innerHTML = h;
+}
+
+// ── Dispatch modal ────────────────────────────────────────────────────────────
+function openDispatch(requestId) {
+  pendingDispatch = requestId;
+  const modal = document.createElement('div');
+  modal.className='modal-bg';
+  modal.id='dispatch-modal';
+  modal.innerHTML=`
+    <div class="modal">
+      <div class="modal-title">Dispatch Restock</div>
+      <p style="font-size:13px;color:var(--muted)">Confirm the quantity and estimated arrival date for request <strong style="color:var(--amber)">${requestId}</strong>.</p>
+      <label>Quantity to Dispatch</label>
+      <input type="number" id="disp-qty" value="24" min="1">
+      <label>Estimated Arrival Date</label>
+      <input type="date" id="disp-date" value="2026-05-14">
+      <div class="modal-btns">
+        <button class="btn btn-r" style="font-size:10px" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-a" style="font-size:10px" onclick="confirmDispatch()">Confirm Dispatch</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function closeModal() {
+  const m=$('dispatch-modal'); if(m) m.remove();
+  pendingDispatch=null;
+}
+
+function confirmDispatch() {
+  const qty = $('disp-qty').value;
+  const date = $('disp-date').value;
+  const id = pendingDispatch;
+  closeModal();
+  const s=$(`rrs-${id}`), a=$(`rra-${id}`);
+  if(s) s.innerHTML='<span class="badge dispatched">Dispatched</span>';
+  if(a) a.innerHTML='<span style="color:var(--cyan);font-family:var(--mono);font-size:10px">Awaiting ack</span>';
+  toast(`✓ ${id} dispatched — ${qty} units arriving ${date}`);
+}
+
+function changeCompany() {
+  CID=null;
+  renderSelector();
+}
+
+async function init() {
+  try {
+    D = await fetch('./data.json').then(r=>r.json());
+    $('loading').style.display='none';
+    $('app').style.display='flex';
+
+    // Check URL param for company
+    const params = new URLSearchParams(window.location.search);
+    const urlCo = params.get('company');
+    if(urlCo && D.companies.find(c=>c.id===urlCo)) {
+      CID = urlCo;
+      renderDashboard();
+    } else {
+      renderSelector();
+    }
+  } catch(e) {
+    $('loading').innerHTML='<span style="color:var(--red)">ERROR: Could not load data.json — run the C++ simulation first, then serve this folder with a local server.</span>';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
